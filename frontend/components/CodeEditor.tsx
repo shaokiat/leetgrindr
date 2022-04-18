@@ -7,20 +7,24 @@ import "ace-builds/src-noconflict/ext-language_tools";
 
 interface CodeEditorProps {
   code: string;
-  onChange?: () => void;
+  onChange: (newCode: string) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange }) => {
   return (
     <AceEditor
+      className="flex-grow"
+      placeholder="Start Coding!"
       mode="python"
       theme="monokai"
-      // onChange={onChange}
+      onChange={onChange}
       name="Code Editor"
       fontSize={16}
-      wrapEnabled={true}
       value={code}
-      // height="800px"
+      height="100%"
+      showGutter={true}
+      showPrintMargin={false}
+      highlightActiveLine={true}
       setOptions={{
         showLineNumbers: true,
         behavioursEnabled: true,
@@ -29,6 +33,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
         enableSnippets: true,
         tabSize: 2,
       }}
+      wrapEnabled={true}
     />
   );
 };

@@ -20,11 +20,12 @@ const HeroDescription = () => {
   return (
     <div className="flex flex-1 flex-col items-center lg:items-start lg:pl-5">
       <h2 className="text-3xl md:text-4 lg:text-4xl lg:text-left text-center mb-6">
-        Let's grind some{" "}
+        {"Let's grind some "}
         <a
           href="https://leetcode.com/"
           target="_blank"
           className="text-orange-400 underline"
+          rel="noreferrer"
         >
           LeetCode
         </a>{" "}
@@ -58,6 +59,7 @@ const HeroLogin = () => {
 
   const onCreateRoomClick = async () => {
     const roomId = await createRoom();
+    console.log(roomId);
     if (!roomId) {
       setCreateRoomError(true);
       return;
@@ -67,6 +69,18 @@ const HeroLogin = () => {
 
   return (
     <form className="bg-slate-900 rounded px-8 pt-6 pb-8 mb-4 lg:w-8/12">
+      <div className="mb-6">
+        <label className="block text-gray-200 text-sm font-bold mb-2">
+          Name
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-200  leading-tight focus:outline-none focus:shadow-outline"
+          id="name"
+          type="text"
+          placeholder="Name"
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
       <div className="mb-6">
         <label className="block text-gray-200 text-sm font-bold mb-2">
           Create New Room
@@ -96,18 +110,7 @@ const HeroLogin = () => {
           onChange={(e) => setRoomId(e.target.value)}
         />
       </div>
-      <div className="mb-6">
-        <label className="block text-gray-200 text-sm font-bold mb-2">
-          Name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-200  leading-tight focus:outline-none focus:shadow-outline"
-          id="name"
-          type="text"
-          placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+
       <div className="flex items-center justify-between">
         <button
           className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -116,6 +119,11 @@ const HeroLogin = () => {
           Join Room
         </button>
       </div>
+      {createRoomError && (
+        <h1 className="text-red-400">
+          Sorry, something went wrong, please try again
+        </h1>
+      )}
     </form>
   );
 };
