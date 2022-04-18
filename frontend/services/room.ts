@@ -16,3 +16,10 @@ export async function createRoom() {
   const { success, roomId } = result.data;
   return success ? roomId : "";
 }
+
+export async function roomExist(roomId: string) {
+  const roomServerUrl = getServerURL();
+  const result = await axios.get(`${roomServerUrl}/room/${roomId}`);
+  const { success, roomExists } = result.data;
+  return success ? roomExists : "";
+}
