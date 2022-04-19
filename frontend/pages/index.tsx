@@ -9,9 +9,7 @@ const Landing: NextPage = () => {
       <Head>
         <title>LeetGrindr</title>
       </Head>
-      {/* <div className="relative"> */}
       <HeroSection />
-      {/* </div> */}
     </Container>
   );
 };

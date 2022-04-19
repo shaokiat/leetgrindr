@@ -1,7 +1,7 @@
 import Image from "next/image";
 import astronaut from "../public/astronaut.png";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { createRoom } from "../services/room";
 
 const HeroSection = () => {
@@ -50,6 +50,11 @@ const HeroLogin = () => {
   const [name, setName] = useState("");
   const [createRoomError, setCreateRoomError] = useState(false);
 
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    localStorage.setItem("name", name);
+  };
+
   const onSubmit = () => {
     if (roomId == "" && name == "") {
       return;
@@ -78,7 +83,7 @@ const HeroLogin = () => {
           id="name"
           type="text"
           placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleNameChange}
         />
       </div>
       <div className="mb-6">

@@ -6,6 +6,7 @@ import {
   codeExecutionEvent,
   codeModifiedEvent,
   codeSaveEvent,
+  initialStateEvent,
   joinRoomEvent,
 } from "./SocketEvents";
 
@@ -14,15 +15,22 @@ export function useCodingSocket(roomId: string) {
   const [output, setOutput] = useState("");
   const codingSocketRef = useRef<Socket>();
 
+  const codingSocket = getSocketIOClient();
+
   // update code state
   useEffect(() => {
-    const codingSocket = getSocketIOClient();
-
     codingSocketRef.current = codingSocket;
 
-    codingSocket.emit(joinRoomEvent, roomId);
+    const name = localStorage.getItem("name");
+
+    codingSocket.emit(joinRoomEvent, { roomId: roomId, name: name });
 
     codingSocket.on(codeModifiedEvent, (codeState: CodeState) => {
+      setCode(codeState.code);
+    });
+
+    codingSocket.on(initialStateEvent, (codeState: CodeState) => {
+      console.log("INITIAL STATE");
       setCode(codeState.code);
     });
 

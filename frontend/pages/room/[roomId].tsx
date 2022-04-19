@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCodingSocket } from "../../hooks/CodingSocket";
 import { codeModifiedEvent } from "../../hooks/SocketEvents";
 import { roomExist } from "../../services/room";
@@ -16,10 +16,15 @@ interface RoomProps {
 }
 
 const Room: NextPage<RoomProps> = ({ roomId }) => {
-  console.log(`ROOM: ${roomId}`);
+  const [name, setName] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const { code, setCode, output, setOutput, codingSocketRef } =
     useCodingSocket(roomId);
+
+  useEffect(() => {
+    const name = localStorage.getItem("name") || "";
+    setName(name);
+  }, []);
 
   const handleCopyButton = () => {
     navigator.clipboard.writeText(roomId);
@@ -42,7 +47,8 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
       <Head>
         <title>Coding Room: {roomId}</title>
       </Head>
-      <h3 className="lg:text-left m-5 flex-row">
+      <h3 className="lg:text-left m-5 mb-0 flex-row">User: {name}</h3>
+      <h3 className="lg:text-left m-5 mt-1 flex-row">
         Room ID: {roomId}
         <button
           className="border-teal-700 border-2 rounded-lg p-1 ml-2"
