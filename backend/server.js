@@ -33,6 +33,10 @@ client
     console.error("Error connecting to redis");
   });
 
+app.get("/", (req, res) => {
+  res.status(200).send("HELLO")
+})
+
 // For aws healthcheck
 app.get("/healthcheck", (req, res) => {
   res.status(200).send("OK");
@@ -141,3 +145,6 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+// Export the Express API
+module.exports = app;
