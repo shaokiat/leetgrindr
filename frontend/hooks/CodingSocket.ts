@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { getSocketIOClient } from "../services/socket";
-import { CodeState, SaveCode } from "../types/codingTypes";
+import { CodeState, SaveCode, Users } from "../types/codingTypes";
 import {
-  codeExecutionEvent,
-  codeModifiedEvent,
-  codeSaveEvent,
-  initialStateEvent,
-  joinRoomEvent,
+  CODE_EXECUTED_EVENT,
+  CODE_MODIFIED_EVENT,
+  CODE_SAVED_EVENT,
+  DISCONNECT_ROOM_EVENT,
+  INITIALSTATE,
+  JOIN_ROOM_EVENT,
+  ROOM_CONNECTION,
 } from "./SocketEvents";
 
 export function useCodingSocket(roomId: string) {
@@ -23,20 +25,27 @@ export function useCodingSocket(roomId: string) {
 
     const name = localStorage.getItem("name");
 
-    codingSocket.emit(joinRoomEvent, { roomId: roomId, name: name });
+    codingSocket.emit(JOIN_ROOM_EVENT, { roomId: roomId, name: name });
 
-    codingSocket.on(codeModifiedEvent, (codeState: CodeState) => {
+    codingSocket.on(CODE_MODIFIED_EVENT, (codeState: CodeState) => {
       setCode(codeState.code);
     });
 
-    codingSocket.on(initialStateEvent, (codeState: CodeState) => {
-      console.log("INITIAL STATE");
+    codingSocket.on(INITIALSTATE, (codeState: CodeState) => {
       setCode(codeState.code);
     });
 
-    codingSocket.on(codeExecutionEvent, (newOutput: string) => {
+    codingSocket.on(CODE_EXECUTED_EVENT, (newOutput: string) => {
       setOutput(output + "\n" + newOutput);
     });
+
+    codingSocket.on(ROOM_CONNECTION, (users: Users) => {
+      console.log(`Users in room: ${users}`);
+    });
+
+    return () => {
+      codingSocket.emit(DISCONNECT_ROOM_EVENT, { roomId, name });
+    };
   }, [roomId]);
 
   useEffect(() => {
@@ -50,7 +59,7 @@ export function useCodingSocket(roomId: string) {
     };
 
     const interval = setInterval(() => {
-      socket?.emit(codeSaveEvent, saveCode);
+      socket?.emit(CODE_SAVED_EVENT, saveCode);
     }, 5000);
 
     return () => {

@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useCodingSocket } from "../../hooks/CodingSocket";
-import { codeModifiedEvent } from "../../hooks/SocketEvents";
+import { CODE_MODIFIED_EVENT } from "../../hooks/SocketEvents";
 import { roomExist } from "../../services/room";
 import { ModifiedCode } from "../../types/codingTypes";
 
@@ -39,7 +39,7 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
       },
     };
     setCode(newCode);
-    codingSocketRef.current?.emit(codeModifiedEvent, modifiedCode);
+    codingSocketRef.current?.emit(CODE_MODIFIED_EVENT, modifiedCode);
   };
 
   return (

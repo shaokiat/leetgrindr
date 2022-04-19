@@ -11,3 +11,5 @@ export type ModifiedCode = {
   roomId: string;
   codeState: CodeState;
 };
+
+export type Users = Array<string>;
