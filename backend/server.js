@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 import { createClient } from "redis";
 import { createServer } from "http";
 import { initializeSocketServer } from "./socket.js";
+import { CODE_MODIFIED_EVENT, CODE_SAVED_EVENT, DISCONNECT_ROOM_EVENT, INITIALSTATE, JOIN_ROOM_EVENT, ROOM_CONNECTION } from "./socketEvents.js";
 
 const PORT = 5000;
 const client = createClient({ url: process.env.REDIS_URL });
@@ -85,16 +86,53 @@ app.post("/create-room", async (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("NEW USER");
-  socket.on("joinRoomEvent", async (roomId, name) => {
-    console.log(roomId)
+  socket.on(JOIN_ROOM_EVENT, async (data) => {
+    const {roomId, name} = data
+
+    await client.lPush(`${roomId}:users`, `${name}`)
+    await client.expire(`${roomId}:users`, 86400)
+
+    const users = await client.lRange(`${roomId}:users`, 0, -1)
     socket.join(roomId);
-    const roomCodeState = await client.hGetAll(socket.id);
+
+    const {content} = await client.hGetAll(roomId);
+    console.log(content)
     const initialCodeState = {
-      code: roomCodeState.code,
+      code: content,
     };
-    socket.emit("initialState", initialCodeState);
+    socket.emit(INITIALSTATE, initialCodeState);
+    io.in(roomId).emit(ROOM_CONNECTION, users)
   });
+
+  socket.on(CODE_MODIFIED_EVENT, async (modifiedCode) => {
+    const {roomId, codeState} = modifiedCode
+    socket.to(roomId).emit(CODE_MODIFIED_EVENT, codeState)
+  })
+
+  socket.on(DISCONNECT_ROOM_EVENT, async (data) => {
+    const {roomId, name} = data
+    const users = await client.lRange(`${roomId}:users`, 0, -1)
+    const newUsers = users.filter((user) => name !== user)
+    if (newUsers.length) {
+      await client.del(`${roomId}:users`)
+      await client.lPush(`${roomId}:users`, newUsers)
+    } else {
+      await client.del(`${roomId}:users`)
+    }
+    io.in(roomId).emit(ROOM_CONNECTION, newUsers)
+  }) 
+
+  socket.on(CODE_SAVED_EVENT, async (saveCodeMessage) => {
+
+    const { roomId, codeState } = saveCodeMessage
+    await client.hSet(roomId, {
+      roomId: roomId,
+      content: codeState.code,
+      language: "PYTHON"
+    }).catch((err) => {
+      console.log(5, err);
+    });
+  })
 });
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
