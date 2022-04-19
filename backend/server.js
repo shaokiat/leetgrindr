@@ -5,7 +5,8 @@ import { v4 } from "uuid";
 import { createClient } from "redis";
 import { createServer } from "http";
 import { initializeSocketServer } from "./socket.js";
-import { CODE_MODIFIED_EVENT, CODE_SAVED_EVENT, DISCONNECT_ROOM_EVENT, INITIALSTATE, JOIN_ROOM_EVENT, ROOM_CONNECTION } from "./socketEvents.js";
+import { CODE_EXECUTED_EVENT, CODE_MODIFIED_EVENT, CODE_SAVED_EVENT, DISCONNECT_ROOM_EVENT, INITIALSTATE, JOIN_ROOM_EVENT, ROOM_CONNECTION } from "./socketEvents.js";
+import { runPython } from "./runPython.js";
 
 const PORT = 5000;
 const client = createClient({ url: process.env.REDIS_URL });
@@ -96,7 +97,6 @@ io.on("connection", (socket) => {
     socket.join(roomId);
 
     const {content} = await client.hGetAll(roomId);
-    console.log(content)
     const initialCodeState = {
       code: content,
     };
@@ -123,7 +123,6 @@ io.on("connection", (socket) => {
   }) 
 
   socket.on(CODE_SAVED_EVENT, async (saveCodeMessage) => {
-
     const { roomId, codeState } = saveCodeMessage
     await client.hSet(roomId, {
       roomId: roomId,
@@ -132,6 +131,12 @@ io.on("connection", (socket) => {
     }).catch((err) => {
       console.log(5, err);
     });
+  })
+
+  socket.on(CODE_EXECUTED_EVENT, async (executeCodeMessage) => {
+    const { roomId, codeState } = executeCodeMessage
+    const output = await runPython(codeState.code)
+    io.to(roomId).emit(CODE_EXECUTED_EVENT, output)
   })
 });
 

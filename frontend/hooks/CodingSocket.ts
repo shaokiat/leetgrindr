@@ -36,6 +36,7 @@ export function useCodingSocket(roomId: string) {
     });
 
     codingSocket.on(CODE_EXECUTED_EVENT, (newOutput: string) => {
+      console.log(newOutput);
       setOutput(output + "\n" + newOutput);
     });
 

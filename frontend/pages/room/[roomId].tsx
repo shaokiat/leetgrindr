@@ -3,7 +3,10 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useCodingSocket } from "../../hooks/CodingSocket";
-import { CODE_MODIFIED_EVENT } from "../../hooks/SocketEvents";
+import {
+  CODE_EXECUTED_EVENT,
+  CODE_MODIFIED_EVENT,
+} from "../../hooks/SocketEvents";
 import { roomExist } from "../../services/room";
 import { ModifiedCode } from "../../types/codingTypes";
 
@@ -42,6 +45,16 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
     codingSocketRef.current?.emit(CODE_MODIFIED_EVENT, modifiedCode);
   };
 
+  const handleRunButton = () => {
+    const modifiedCode: ModifiedCode = {
+      roomId: roomId,
+      codeState: {
+        code: code,
+      },
+    };
+    codingSocketRef.current?.emit(CODE_EXECUTED_EVENT, modifiedCode);
+  };
+
   return (
     <div className="bg-slate-700 h-screen w-screen text-white flex flex-col">
       <Head>
@@ -60,9 +73,14 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
       <div className="flex h-3/5">
         <CodeEditor code={code} onChange={onCodeChange} />
         <div className="w-2/5 bg-slate-900 relative">
-          Output
+          {output}
           <div className="absolute bottom-0 left-0">
-            <button className="bg-green-600 py-3 px-6 rounded-lg">Run</button>
+            <button
+              className="bg-green-600 py-3 px-6 rounded-lg"
+              onClick={handleRunButton}
+            >
+              Run
+            </button>
           </div>
         </div>
       </div>
