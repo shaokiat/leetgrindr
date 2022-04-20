@@ -8,7 +8,7 @@ import { initializeSocketServer } from "./socket.js";
 import { CODE_EXECUTED_EVENT, CODE_MODIFIED_EVENT, CODE_SAVED_EVENT, DISCONNECT_ROOM_EVENT, INITIALSTATE, JOIN_ROOM_EVENT, ROOM_CONNECTION } from "./socketEvents.js";
 import { runPython } from "./runPython.js";
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const client = createClient({ url: process.env.REDIS_URL });
 const app = express();
 const server = createServer(app);
