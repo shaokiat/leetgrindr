@@ -145,6 +145,3 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-// Export the Express API
-module.exports = app;
