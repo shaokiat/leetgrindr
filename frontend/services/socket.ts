@@ -5,9 +5,7 @@ export function getSocketIOClient(): Socket {
   if (process.env.NODE_ENV == "development") {
     return io("ws://localhost:5000", { transports: ["websocket"] });
   } else {
-    const serverUrl = process.env.NEXT_ROOM_SERVER;
-    return io(`${serverUrl}`, {
-      path: "/code-collab/socket.io",
-    });
+    const serverUrl = process.env.NEXT_PUBLIC_ROOM_SERVER;
+    return io(`ws://${serverUrl}`, { transports: ["websocket"] });
   }
 }
