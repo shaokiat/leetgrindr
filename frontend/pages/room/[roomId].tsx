@@ -21,7 +21,7 @@ interface RoomProps {
 const Room: NextPage<RoomProps> = ({ roomId }) => {
   const [name, setName] = useState("");
   const [isCopied, setIsCopied] = useState(false);
-  const { code, setCode, output, execError, codingSocketRef } =
+  const { code, setCode, output, execError, roomUsers, codingSocketRef } =
     useCodingSocket(roomId);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
         <title>Coding Room: {roomId}</title>
       </Head>
       <h3 className="lg:text-left m-5 mb-0 flex-row">User: {name}</h3>
-      <h3 className="lg:text-left m-5 mt-1 flex-row">
+      <h3 className="lg:text-left mx-5 mt-1 flex-row">
         Room ID: {roomId}
         <button
           className="border-teal-700 border-2 rounded-lg p-1 ml-2"
@@ -70,6 +70,7 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
           {isCopied ? "Copied!" : "Copy"}
         </button>
       </h3>
+      <h3 className="lg:text-left m-5 mt-1 flex-row">{`Roomies: ${roomUsers}`}</h3>
       <div className="flex h-3/5">
         <CodeEditor code={code} onChange={onCodeChange} />
         <div className="w-2/5 bg-slate-900 pl-3 font-mono relative whitespace-pre-wrap">

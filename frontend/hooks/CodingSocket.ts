@@ -16,6 +16,7 @@ export function useCodingSocket(roomId: string) {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
   const [execError, setExecError] = useState(false);
+  const [roomUsers, setRoomUsers] = useState<Users>();
   const codingSocketRef = useRef<Socket>();
   const outputRef = useRef("");
 
@@ -53,6 +54,7 @@ export function useCodingSocket(roomId: string) {
 
     codingSocket.on(ROOM_CONNECTION, (users: Users) => {
       console.log(`Users in room: ${users}`);
+      setRoomUsers(users);
     });
 
     return () => {
@@ -84,6 +86,7 @@ export function useCodingSocket(roomId: string) {
     output,
     setOutput,
     execError,
+    roomUsers,
     codingSocketRef,
   };
 }
