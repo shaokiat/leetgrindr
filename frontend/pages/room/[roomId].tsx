@@ -78,6 +78,7 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
           ) : (
             <p className="">{output}</p>
           )}
+          {">>>"}
           <div className="absolute bottom-0 left-0">
             <button
               className="bg-green-600 py-3 px-3 rounded-lg font-sans"

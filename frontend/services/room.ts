@@ -2,7 +2,11 @@ import axios from "axios";
 
 function getServerURL(): string {
   const roomServerUrl = process.env.NEXT_PUBLIC_ROOM_SERVER;
-  return `https://${roomServerUrl}` || "http://localhost:5000";
+  if (process.env.NODE_ENV == "development") {
+    return "http://localhost:5000";
+  } else {
+    return `https://${roomServerUrl}` || "http://localhost:5000";
+  }
 }
 
 export async function createRoom() {
