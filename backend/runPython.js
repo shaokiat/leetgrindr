@@ -5,7 +5,7 @@ export async function runPython(code) {
     PythonShell.runString(
       code,
       null,
-      function (err, res) {
+      (err, res) => {
         if (!code) {
           return
         }
@@ -16,6 +16,9 @@ export async function runPython(code) {
             execOutput: err.message
           })
         } else {
+          if (!res) {
+            return
+          }
           console.log(res)
           resolve({
             error: false,
