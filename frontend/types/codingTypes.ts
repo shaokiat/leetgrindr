@@ -12,4 +12,9 @@ export type ModifiedCode = {
   codeState: CodeState;
 };
 
+export type OutputType = {
+  error: boolean;
+  execOutput: string;
+};
+
 export type Users = Array<string>;

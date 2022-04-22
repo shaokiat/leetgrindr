@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { getSocketIOClient } from "../services/socket";
-import { CodeState, SaveCode, Users } from "../types/codingTypes";
+import { CodeState, OutputType, SaveCode, Users } from "../types/codingTypes";
 import {
   CODE_EXECUTED_EVENT,
   CODE_MODIFIED_EVENT,
@@ -15,7 +15,9 @@ import {
 export function useCodingSocket(roomId: string) {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
+  const [execError, setExecError] = useState(false);
   const codingSocketRef = useRef<Socket>();
+  const outputRef = useRef("");
 
   const codingSocket = getSocketIOClient();
 
@@ -35,9 +37,18 @@ export function useCodingSocket(roomId: string) {
       setCode(codeState.code);
     });
 
-    codingSocket.on(CODE_EXECUTED_EVENT, (newOutput: string) => {
+    codingSocket.on(CODE_EXECUTED_EVENT, (newOutput: OutputType) => {
+      const { error, execOutput } = newOutput;
       console.log(newOutput);
-      setOutput(output + "\n" + newOutput);
+      setOutput((prev) => {
+        if (prev) {
+          outputRef.current = prev + "\n" + execOutput;
+        } else {
+          outputRef.current = execOutput;
+        }
+        return outputRef.current;
+      });
+      setExecError(error);
     });
 
     codingSocket.on(ROOM_CONNECTION, (users: Users) => {
@@ -51,7 +62,6 @@ export function useCodingSocket(roomId: string) {
 
   useEffect(() => {
     const socket = codingSocketRef.current;
-
     const saveCode: SaveCode = {
       roomId,
       codeState: {
@@ -73,6 +83,7 @@ export function useCodingSocket(roomId: string) {
     setCode,
     output,
     setOutput,
+    execError,
     codingSocketRef,
   };
 }

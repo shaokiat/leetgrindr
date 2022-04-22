@@ -48,7 +48,6 @@ const HeroLogin = () => {
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
-    localStorage.setItem("name", name);
   };
 
   const onJoinRoomClick = async () => {
@@ -62,6 +61,7 @@ const HeroLogin = () => {
       setJoinError(true);
       return;
     } else {
+      localStorage.setItem("name", name);
       router.push(`/room/${roomId}`);
     }
   };
@@ -76,6 +76,7 @@ const HeroLogin = () => {
       setCreateRoomError(true);
       return;
     }
+    localStorage.setItem("name", name);
     router.push(`/room/${roomId}`);
   };
 

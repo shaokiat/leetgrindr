@@ -21,7 +21,7 @@ interface RoomProps {
 const Room: NextPage<RoomProps> = ({ roomId }) => {
   const [name, setName] = useState("");
   const [isCopied, setIsCopied] = useState(false);
-  const { code, setCode, output, setOutput, codingSocketRef } =
+  const { code, setCode, output, execError, codingSocketRef } =
     useCodingSocket(roomId);
 
   useEffect(() => {
@@ -72,14 +72,18 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
       </h3>
       <div className="flex h-3/5">
         <CodeEditor code={code} onChange={onCodeChange} />
-        <div className="w-2/5 bg-slate-900 relative">
-          {output}
+        <div className="w-2/5 bg-slate-900 pl-3 font-mono relative whitespace-pre-wrap">
+          {execError ? (
+            <p className="text-yellow-200 ">{output}</p>
+          ) : (
+            <p className="">{output}</p>
+          )}
           <div className="absolute bottom-0 left-0">
             <button
-              className="bg-green-600 py-3 px-6 rounded-lg"
+              className="bg-green-600 py-3 px-3 rounded-lg font-sans"
               onClick={handleRunButton}
             >
-              Run
+              Run Code
             </button>
           </div>
         </div>
