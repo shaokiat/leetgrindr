@@ -10,9 +10,9 @@ Current Features:
 - Create/Join room with live code editor
 - Run Python scripts using `python-shell` node package
 - Save room code every 5s to redis database
+- Show participants in room
 
 Pending Features:
-- Show participants in room
 - Show participants cursor
 - Question bank from leetcode
 - Video/Voice support

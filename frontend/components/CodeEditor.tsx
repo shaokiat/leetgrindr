@@ -14,17 +14,18 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange }) => {
   return (
     <AceEditor
       className="flex-grow"
-      placeholder="Start Coding!"
+      placeholder="Let's Code! Use Print() to show output."
       mode="python"
       theme="monokai"
       onChange={onChange}
       name="Code Editor"
-      fontSize={16}
+      fontSize={17}
       value={code}
       height="100%"
       showGutter={true}
       showPrintMargin={false}
       highlightActiveLine={true}
+      wrapEnabled={true}
       setOptions={{
         showLineNumbers: true,
         behavioursEnabled: true,
@@ -33,7 +34,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange }) => {
         enableSnippets: true,
         tabSize: 2,
       }}
-      wrapEnabled={true}
     />
   );
 };
