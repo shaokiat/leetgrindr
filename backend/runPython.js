@@ -6,12 +6,21 @@ export async function runPython(code) {
       code,
       null,
       function (err, res) {
+        if (!code) {
+          return
+        }
         if (err) {
-          reject(err)
+          console.log(err.message)
+          resolve({
+            error: true,
+            execOutput: err.message
+          })
         } else {
-          console.log("Code executed")
           console.log(res)
-          resolve(res[0])
+          resolve({
+            error: false,
+            execOutput: res[0]
+          })
         }
       }
     )

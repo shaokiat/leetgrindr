@@ -139,8 +139,8 @@ io.on("connection", (socket) => {
 
   socket.on(CODE_EXECUTED_EVENT, async (executeCodeMessage) => {
     const { roomId, codeState } = executeCodeMessage
-    const output = await runPython(codeState.code)
-    io.to(roomId).emit(CODE_EXECUTED_EVENT, output)
+    const {error, execOutput} = await runPython(codeState.code)
+    io.to(roomId).emit(CODE_EXECUTED_EVENT, {error, execOutput})
   })
 });
 
