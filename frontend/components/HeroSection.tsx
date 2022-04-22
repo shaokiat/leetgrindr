@@ -6,8 +6,8 @@ import { createRoom, roomExist } from "../services/room";
 
 const HeroSection = () => {
   return (
-    <div className="container mx-auto flex flex-col-reverse items-center lg:flex-row gap-6 pt-20 w-8/12 ">
-      <div className="lg:w-2/3 flex flex-col items-center lg:pt-24 ">
+    <div className="container mx-auto flex flex-col-reverse items-center lg:flex-row gap-6 w-8/12 justify-center h-screen">
+      <div className="lg:w-2/3 flex flex-col items-center">
         <HeroDescription />
         <HeroLogin />
       </div>
