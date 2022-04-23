@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCodingSocket } from "../../hooks/CodingSocket";
 import {
   CODE_EXECUTED_EVENT,
@@ -23,6 +23,7 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
   const [isCopied, setIsCopied] = useState(false);
   const { code, setCode, output, execError, roomUsers, codingSocketRef } =
     useCodingSocket(roomId);
+  const scrollRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     const name = localStorage.getItem("name") || "";
@@ -55,6 +56,10 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
     codingSocketRef.current?.emit(CODE_EXECUTED_EVENT, modifiedCode);
   };
 
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [output]);
+
   return (
     <div className="bg-slate-700 h-screen w-screen text-white flex flex-col">
       <Head>
@@ -73,20 +78,26 @@ const Room: NextPage<RoomProps> = ({ roomId }) => {
       <h3 className="lg:text-left m-5 mt-1 flex-row">{`Roomies: ${roomUsers}`}</h3>
       <div className="flex h-3/5">
         <CodeEditor code={code} onChange={onCodeChange} />
-        <div className="w-2/5 bg-slate-900 pl-3 font-mono relative whitespace-pre-wrap">
-          {execError ? (
-            <p className="text-yellow-200 ">{output}</p>
-          ) : (
-            <p className="">{output}</p>
-          )}
-          {">>>"}
-          <div className="absolute bottom-0 left-0">
-            <button
-              className="bg-green-600 py-3 px-3 rounded-lg font-sans"
-              onClick={handleRunButton}
-            >
-              Run Code
-            </button>
+        <div className="w-2/5 bg-slate-900 relative">
+          <div className="p-3 font-mono whitespace-pre-wrap overflow-auto h-[90%] ">
+            {execError ? (
+              <p className="text-yellow-200">{output}</p>
+            ) : (
+              <p>{output}</p>
+            )}
+            <div ref={scrollRef} className="">
+              {">>>"}
+            </div>
+          </div>
+          <div className="relative h-[10%]">
+            <div className="absolute bottom-0 left-0">
+              <button
+                className="bg-green-600 py-3 px-3 rounded-lg font-sans"
+                onClick={handleRunButton}
+              >
+                Run Code
+              </button>
+            </div>
           </div>
         </div>
       </div>
